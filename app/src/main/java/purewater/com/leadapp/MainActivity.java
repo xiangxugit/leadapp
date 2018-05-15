@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void doDownload(String url){
-
+//        https://blog.csdn.net/sk719887916/article/details/46746991
 
 //        XutilsHttp.getInstance().get(true,MainActivity.this);
        /* RequestParams requestParams = new RequestParams(url);
