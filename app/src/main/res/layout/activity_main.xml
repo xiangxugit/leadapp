@@ -11,10 +11,10 @@
 
 
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:background="@mipmap/install"
+
         />
 
 
@@ -49,40 +49,58 @@
     </LinearLayout>
 
 
-
-
-
       <!--<android.support.v7.widget.AppCompatSeekBar-->
        <!--android:id="@+id/steptwo"-->
        <!--android:layout_width="match_parent"-->
        <!--android:layout_height="wrap_content"-->
        <!--android:layout_margin="@dimen/margins"-->
        <!--android:visibility="gone"-->
-
        <!--/>-->
+    <LinearLayout
+        android:id="@+id/twostep"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical"
+        >
+
+
+        <ProgressBar
+            android:id="@+id/jindu"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            style="@android:style/Widget.ProgressBar.Horizontal"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="正在安装，请稍后。。。"
+            />
+    </LinearLayout>
 
 
 
      <LinearLayout
          android:orientation="vertical"
          android:id="@+id/three"
-
+         android:visibility="gone"
          android:layout_width="match_parent"
          android:layout_gravity="center"
          android:gravity="center"
          android:layout_height="wrap_content">
 
          <ImageView
+             android:id="@+id/qcode"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-             android:background="@mipmap/ic_launcher_round"
              />
 
          <TextView
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
              android:layout_gravity="center"
-             android:text="@string/appnametitle"
+             android:text="@string/scanqcode"
              />
      </LinearLayout>
 
@@ -92,6 +110,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:id="@+id/four"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
@@ -110,14 +129,33 @@
             android:text="@string/appnametitle"
             />
     </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <LinearLayout
         android:id="@+id/fivestep"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="@string/restart"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/restart"
+            />
+
+        <TextView
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/daojishichongqi"
+            />
+
+
+    </LinearLayout>
+
 
 </LinearLayout>
