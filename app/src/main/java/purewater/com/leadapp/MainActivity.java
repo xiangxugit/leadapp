@@ -205,6 +205,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onFinished() {
                 Log.e("tag", "完成,每次取消下载也会执行该方法"+Thread.currentThread().getName());
+
+//                https://dev.mi.com/console/doc/detail?pId=41
             }
 
             @Override
@@ -247,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-     
+
 
 
 
