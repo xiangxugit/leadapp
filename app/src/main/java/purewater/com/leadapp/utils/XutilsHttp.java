@@ -73,8 +73,9 @@ public class XutilsHttp {
                 params.addQueryStringParameter(entry.getKey(),entry.getValue());
             }
         }
-        if(true){
-            params.addHeader("authorization",BaseSharedPreferences.getString(context,BaseSharedPreferences.getString(context,BaseSharedPreferences.TOKEN)));
+        if(gettoken){
+            String test = BaseSharedPreferences.getString(context,BaseSharedPreferences.TOKEN);
+            params.addHeader("authorization",BaseSharedPreferences.getString(context,BaseSharedPreferences.TOKEN));
         }
         x.http().get(params, new Callback.CommonCallback<String>() {
             private boolean hasError = false;

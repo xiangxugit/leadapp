@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.xutils.x;
 
+import purewater.com.leadapp.beans.SysApkVersionVO;
 import purewater.com.leadapp.utils.BaseSharedPreferences;
 import purewater.com.leadapp.utils.Create2QR2;
 import purewater.com.leadapp.utils.RestUtils;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-    private Callback.Cancelable cancelable;//
+    private Callback.Cancelable cancelable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +97,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String accessToken = dataobj.getString("accessToken");
                 //把token存入缓存
                 BaseSharedPreferences.setString(MainActivity.this,BaseSharedPreferences.TOKEN,accessToken);
-                String downloadurl = RestUtils.getUrl(RestUtils.NEWAPK);
-                doDownload(downloadurl);
+//                String downloadurl = RestUtils.getUrl(RestUtils.NEWAPK);
+//                doDownload(downloadurl);
 
 
 
@@ -128,10 +129,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()){
             case R.id.intall:
                 intall.setVisibility(View.GONE);
-                String url = RestUtils.getUrl(RestUtils.DOWNLOAD);
+                String url = RestUtils.getUrl(RestUtils.NEWAPK);
 //                installSilent(Environment.getExternalStorageDirectory()+"/myapp/"+"test.apk");
-                doDownload(url);
+//                doDownload(url);
+                install("test");
                 showStep("one");
+
                 break;
         }
     }
@@ -157,10 +160,97 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void doDownload(String url){
+         XutilsHttp.getInstance().get(true,MainActivity.this,url,null,new XCallBack(){
+             @Override
+             public void onResponse(String result) {
+                 String test = result;
+                 Log.e("test","test"+test);
+                 JSONObject apkinfoobj = JSON.parseObject(result);
+                 String apkinfostring = apkinfoobj.getString("data");
+                 SysApkVersionVO sysApkVersionVO = JSONObject.parseObject(apkinfostring,SysApkVersionVO.class);
+                 install(sysApkVersionVO.getApkUrl());
+
+
+             }
+
+             @Override
+             public void onFail(String result) {
+                 Log.e("faile","faile"+result);
+             }
+         });
 //        https://blog.csdn.net/sk719887916/article/details/46746991
 
-//        XutilsHttp.getInstance().get(true,MainActivity.this);
-       /* RequestParams requestParams = new RequestParams(url);
+    }
+
+    public void install(String url){
+        url = "http://121.43.198.84:8026/upload/anjian.apk";
+        RequestParams requestParams = new RequestParams(url);
+        requestParams.setAutoResume(true);//设置为断点续传
+        requestParams.setAutoRename(false);
+        final String name = getFileExtensionFromUrl(url);
+        requestParams.setSaveFilePath("/sdcard/myapp/"+name);
+        requestParams.setExecutor(new PriorityExecutor(2, true));
+        requestParams.setCancelFast(true);
+        cancelable = x.http().get(requestParams, new Callback.ProgressCallback<File>()  {
+            @Override
+            public void onCancelled(CancelledException arg0) {
+                Log.e("tag", "取消"+Thread.currentThread().getName());
+            }
+
+            @Override
+            public void onError(Throwable arg0, boolean arg1) {
+                Log.e("tag", "onError: 失败"+Thread.currentThread().getName());
+            }
+
+            @Override
+            public void onFinished() {
+                Log.e("tag", "完成,每次取消下载也会执行该方法"+Thread.currentThread().getName());
+            }
+
+            @Override
+            public void onSuccess(File arg0) {
+                Log.e("tag", "下载成功的时候执行"+Thread.currentThread().getName());
+                //TODO 安装
+
+                showStep("two");
+//
+                //TODO获取二维码
+                String stringerweima = "erweimatst";
+                Bitmap bit = Create2QR2.createBitmap(stringerweima);
+                qcode.setImageBitmap(bit);
+//                https://www.cnblogs.com/lr393993507/p/5543145.html
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(arg0), "application/vnd.android.package-archive");
+                startActivity(intent);
+
+//                installSilent(Environment.getExternalStorageDirectory()+"/myapp/"+name);
+            }
+
+            @Override
+            public void onLoading(long total, long current, boolean isDownloading) {
+                if (isDownloading) {
+                    jindu.setProgress((int) (current*100/total));
+                    Log.e("tag", "下载中,会不断的进行回调:"+Thread.currentThread().getName());
+                }
+            }
+
+            @Override
+            public void onStarted() {
+                Log.e("tag", "开始下载的时候执行"+Thread.currentThread().getName());
+            }
+
+            @Override
+            public void onWaiting() {
+                Log.e("tag", "等待,在onStarted方法之前执行"+Thread.currentThread().getName());
+            }
+        });
+    }
+
+
+        /*
+//        url = "http://121.43.198.84:8026/upload/anjian.apk";
+        url = "http://flv2.bn.netease.com/videolib3/1604/28/fVobI0704/SD/fVobI0704-mobile.mp4";
+        RequestParams requestParams = new RequestParams(url);
         requestParams.setAutoResume(true);//设置为断点续传
         requestParams.setAutoRename(false);
         final  String name = getFileExtensionFromUrl(url);
@@ -177,12 +267,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onError(Throwable arg0, boolean arg1) {
                 Log.e("tag", "onError: 失败"+Thread.currentThread().getName());
 //                progressDialog.dismiss();
-                showStep("two");
-
-                //TODO获取二维码
-                String stringerweima = "erweimatst";
-                Bitmap bit = Create2QR2.createBitmap(stringerweima);
-                qcode.setImageBitmap(bit);
+//                showStep("two");
+//
+//                //TODO获取二维码
+//                String stringerweima = "erweimatst";
+//                Bitmap bit = Create2QR2.createBitmap(stringerweima);
+//                qcode.setImageBitmap(bit);
 
             }
 
@@ -199,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                Intent intent = new Intent(Intent.ACTION_VIEW);
 //                intent.setDataAndType(Uri.fromFile(arg0), "application/vnd.android.package-archive");
 //                startActivity(intent);
-//                installSilent(Environment.getExternalStorageDirectory()+"/myapp/"+name);
+                installSilent(Environment.getExternalStorageDirectory()+"/myapp/"+name);
             }
 
             @Override
@@ -221,7 +311,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.e("tag", "等待,在onStarted方法之前执行"+Thread.currentThread().getName());
             }
         });*/
-    }
+
+//    }
 
 
 
